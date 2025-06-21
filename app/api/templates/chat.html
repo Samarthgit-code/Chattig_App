@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css">
+  <style>
+    :root {
+      --bg-light: #ffffff;
+      --bg-dark: #121212;
+      --text-light: #000000;
+      --text-dark: #ffffff;
+      --input-bg-light: #f1f1f1;
+      --input-bg-dark: #1f1f1f;
+      --sent-bg-light: #dcf8c6;
+      --received-bg-light: #f1f0f0;
+      --sent-bg-dark: #056162;
+      --received-bg-dark: #262d31;
+    }
+
+    [data-theme="light"] {
+      --bg: var(--bg-light);
+      --text: var(--text-light);
+      --input-bg: var(--input-bg-light);
+      --sent-bg: var(--sent-bg-light);
+      --received-bg: var(--received-bg-light);
+    }
+
+    [data-theme="dark"] {
+      --bg: var(--bg-dark);
+      --text: var(--text-dark);
+      --input-bg: var(--input-bg-dark);
+      --sent-bg: var(--sent-bg-dark);
+      --received-bg: var(--received-bg-dark);
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .chat-container {
+      padding: 1rem;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .messages-box {
+      max-height: 70vh;
+      overflow-y: auto;
+      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message {
+      max-width: 70%;
+      padding: 10px 15px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      position: relative;
+      word-wrap: break-word;
+    }
+
+    .sent {
+      align-self: flex-end;
+      background-color: var(--sent-bg);
+      color: var(--text);
+    }
+
+    .received {
+      align-self: flex-start;
+      background-color: var(--received-bg);
+      color: var(--text);
+    }
+
+    .timestamp {
+      display: block;
+      font-size: 0.75rem;
+      opacity: 0.6;
+      margin-top: 5px;
+    }
+
+    form textarea {
+      background-color: var(--input-bg);
+      color: var(--text);
+      border: none;
+      border-radius: 10px;
+      width: 100%;
+      padding: 10px;
+      resize: none;
+    }
+
+    form button {
+      margin-top: 10px;
+    }
+
+    .header {
+      background-color: #25D366;
+      padding: 1rem;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .toggle-theme {
+      background: transparent;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 1.2rem;
+
+
+    }
+
+    .message-form input[type="text"],
+.message-form textarea,
+.message-form input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+[data-theme="dark"] .message-form input[type="text"],
+[data-theme="dark"] .message-form textarea {
+  border: 1px solid #555;
+}
+
+  </style>
+</head>
+<body>
+    <div id="typing-indicator" style="display:none;">Typing...</div>
+  <div class="header">
+    <h3>{{ other_user.username }}</h3>
+    <button onclick="toggleTheme()" class="toggle-theme">🌓</button>
+  </div>
+
+  <div class="chat-container">
+    <div class="messages-box">
+      {% for message in messages %}
+        <div class="message {% if message.sender == request.user %}sent{% else %}received{% endif %}">
+          {{ message.content }}
+          <span class="timestamp">{{ message.timestamp }}</span>
+        </div>
+      {% empty %}
+        <p>No messages yet.</p>
+      {% endfor %}
+    </div>
+
+    <form method="post" class="message-form">
+  {% csrf_token %}
+  {{ form.content }}
+  <button type="submit" class="btn btn-success">Send</button>
+</form>
+
+
+  <script>
+    function toggleTheme() {
+      const theme = document.documentElement.getAttribute("data-theme");
+      const newTheme = theme === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", newTheme);
+      localStorage.setItem("theme", newTheme);
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme) {
+        document.documentElement.setAttribute("data-theme", savedTheme);
+      }
+    });
+  </script>
+<script>
+    const input = document.querySelector("#id_content");
+    input.addEventListener("input", () => {
+        fetch("{% url 'typing_status' other_user.username %}", {
+            method: 'POST',
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+        });
+    });
+
+    function checkTyping() {
+        fetch("{% url 'typing_status' other_user.username %}?check=1")
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("typing-indicator").style.display = data.typing ? "block" : "none";
+            });
+    }
+
+    setInterval(checkTyping, 3000);
+</script>
+
+</body>
+</html>
