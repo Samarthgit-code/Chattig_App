@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.parse(
-        "postgresql://database_r559_user:73DnZGSNapxNj189ZU2Sx68MdszP0Yl0@dpg-d1ahjg3e5dus73eju4dg-a/database_r559"
+        "postgresql://database_r559_user:73DnZGSNapxNj189ZU2Sx68MdszP0Yl0@dpg-d1ahjg3e5dus73eju4dg-a.oregon-postgres.render.com/database_r559"
     )
 }
 
