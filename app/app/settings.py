@@ -26,7 +26,10 @@ SECRET_KEY = 'django-insecure-yxugf$drpw^ro#hzh1%y6y9(-u76rru#_s4*oevweq5f771)jo
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["https://chattig-app.onrender.com"]
+
+
+CSRF_TRUSTED_ORIGINS = ["https://chattig-app.onrender.com"]
 
 
 # Application definition
