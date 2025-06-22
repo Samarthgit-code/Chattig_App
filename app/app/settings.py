@@ -26,10 +26,9 @@ SECRET_KEY = 'django-insecure-yxugf$drpw^ro#hzh1%y6y9(-u76rru#_s4*oevweq5f771)jo
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["chattig-app.onrender.com"]
+ALLOWED_HOSTS = ['chattig-app.onrender.com','*']
+CSRF_TRUSTED_ORIGINS = ['https://chattig-app.onrender.com']
 
-
-CSRF_TRUSTED_ORIGINS = ["https://chattig-app.onrender.com"]
 
 
 # Application definition
@@ -46,7 +45,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -83,12 +81,12 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
 DATABASES = {
     'default': dj_database_url.parse(
         "postgresql://database_r559_user:73DnZGSNapxNj189ZU2Sx68MdszP0Yl0@dpg-d1ahjg3e5dus73eju4dg-a.oregon-postgres.render.com/database_r559"
     )
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -129,3 +127,12 @@ STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'ds3pcl92z',
+    'API_KEY': '998526572417355',
+    'API_SECRET': 'Lwl3GWWzrFHLDh2yWybNuh4zIb8'
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
