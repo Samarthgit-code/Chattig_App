@@ -4,8 +4,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Corona Admin</title>
-    
+    <title>Upload Video</title>
+
     <!-- plugins:css -->
     <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
@@ -15,7 +15,7 @@
     <!-- Layout styles -->
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
     <link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}" />
-    
+
     <style>
       body, html {
         height: 100%;
@@ -49,13 +49,15 @@
       }
     </style>
   </head>
+
   <body>
     <div class="container-scroller">
       <div class="container-fluid page-body-wrapper">
         {% include "partials/_navbar.html" %}
         <div class="main-panel">
           <div class="content-wrapper">
-<br>
+            <br>
+
             <div class="col-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
@@ -63,7 +65,7 @@
 
                   <form action="{% url 'create' %}" method="post" enctype="multipart/form-data" class="forms-sample">
                     {% csrf_token %}
-                    
+
                     <div class="form-group">
                       <label for="title">Title</label>
                       <input style="color:white;" type="text" class="form-control" name="title" id="title" placeholder="Title" required>
@@ -71,24 +73,12 @@
 
                     <div class="form-group">
                       <label>Upload Video</label>
-                      <input type="file" name="video_file" class="file-upload-default" required>
-                      <div class="input-group col-xs-12">
-                        <input style="color:white;" type="text" class="form-control file-upload-info" disabled placeholder="Upload Video">
-                        <span class="input-group-append">
-                          <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
-                        </span>
-                      </div>
+                      <input type="file" name="video_file" id="video_file" class="form-control" required>
                     </div>
 
                     <div class="form-group">
                       <label>Upload Thumbnail</label>
-                      <input type="file" name="thumbnail" class="file-upload-default" required>
-                      <div class="input-group col-xs-12">
-                        <input style="color:white;" type="text" class="form-control file-upload-info" disabled placeholder="Upload Thumbnail">
-                        <span class="input-group-append">
-                          <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
-                        </span>
-                      </div>
+                      <input type="file" name="thumbnail" id="thumbnail" class="form-control" required>
                     </div>
 
                     <div class="form-group">
@@ -118,8 +108,20 @@
     <script src="{% static 'assets/js/misc.js' %}"></script>
     <script src="{% static 'assets/js/settings.js' %}"></script>
     <script src="{% static 'assets/js/todolist.js' %}"></script>
-    <script src="{% static 'assets/js/file-upload.js' %}"></script>
-    <script src="{% static 'assets/js/typeahead.js' %}"></script>
-    <script src="{% static 'assets/js/select2.js' %}"></script>
+
+    <!-- Optional: File upload styling (if needed) -->
+    <script>
+      // Optional fallback: show selected file name
+      document.addEventListener('DOMContentLoaded', function () {
+        const inputs = document.querySelectorAll('input[type="file"]');
+        inputs.forEach(input => {
+          input.addEventListener('change', function () {
+            const fileName = this.files[0]?.name || 'No file chosen';
+            alert(`Selected: ${fileName}`); // Optional: Replace this with custom UI updates
+          });
+        });
+      });
+    </script>
   </body>
 </html>
+
