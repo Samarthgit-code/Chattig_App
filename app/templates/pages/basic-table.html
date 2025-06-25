@@ -1,0 +1,83 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Corona Admin</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href={% static "assets/vendors/mdi/css/materialdesignicons.min.css" %}>
+    <link rel="stylesheet" href={% static "assets/vendors/css/vendor.bundle.base.css" %}>
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href={% static "assets/css/style.css" %}>
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href={% static "assets/images/favicon.png" %} />
+  </head>
+  <style>
+  body {
+    background-color: #000000 !important;
+    color: white;
+  }
+</style>
+
+  <body>
+    <div class="container-scroller">
+      <!-- partial:partials/_sidebar.html -->
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_navbar.html -->
+        {% include "partials/_navbar.html" %}
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h3 class="page-title"> Your Followlings </h3>
+            
+            </div>
+            <ul>
+  {% for p in subscriptions %}
+<a href="{% url 'profile' p.user.username %}" style="position: relative; display: inline-block; width: 150px;">
+  <img src="{% url 'media-proxy' p.photo.name %}" alt="Profile Photo"
+       style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; display: block;">
+  <div style="position: absolute; bottom: 0; width: 100%; text-align: center; background: rgba(0,0,0,0.6); color: white; font-weight: bold; border-radius: 0 0 50% 50%;">
+    {{ p.user.username }}
+  </div>
+</a>
+
+
+    </li>
+  {% empty %}
+    <li>No subscriptions yet.</li>
+  {% endfor %}
+</ul>
+
+ 
+            
+            
+              
+      <!-- page-body-wrapper ends -->
+  
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src={% static "assets/vendors/js/vendor.bundle.base.js" %}></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src={% static "assets/js/off-canvas.js" %}></script>
+    <script src={% static "assets/js/hoverable-collapse.js" %}></script>
+    <script src={% static "assets/js/misc.js" %}></script>
+    <script src={% static "assets/js/settings.js" %}></script>
+    <script src={% static "assets/js/todolist.js" %}></script>
+    <!-- endinject -->
+    <!-- Custom js for this page -->
+    <!-- End custom js for this page -->
+  </body>
+</html>

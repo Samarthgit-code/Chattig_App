@@ -1,0 +1,15 @@
+{% for i in videos %}
+  <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="video-wrapper">
+          <video controls poster="{{ i.tumbnail.url }}">
+            <source src="{{ i.video.url }}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <div class="video-title-overlay">{{ i.title }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}

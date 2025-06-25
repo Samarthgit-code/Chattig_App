@@ -1,0 +1,304 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Video Detail</title>
+
+  <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+  <link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}">
+
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    .video-container {
+      position: relative;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    video {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .controls button,
+    .controls select,
+    .controls input[type="range"] {
+      padding: 6px;
+      font-size: 0.9rem;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .progress-container {
+      position: relative;
+      width: 100%;
+    }
+
+    #progressBar {
+      width: 100%;
+      accent-color: blue;
+    }
+
+    .thumbnail-preview {
+      position: absolute;
+      width: 160px;
+      height: 90px;
+      background-image: url('{% static "images/thumbnail-sprite.jpg" %}');
+      background-size: cover;
+      display: none;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .comments-box {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      background: #1c1c1c;
+      padding: 10px;
+      border-radius: 8px;
+      color: white;
+    }
+
+    .comments-box.show {
+      max-height: 500px;
+    }
+
+    .custom-scrollbar {
+      max-height: 200px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #888 #111;
+      background: rgb(15, 15, 15);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .video-details {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .video-details img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .video-info {
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 768px) {
+      .controls {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .video-details {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .video-details img {
+        width: 35px;
+        height: 35px;
+      }
+
+      .video-info span {
+        font-size: 1rem;
+      }
+
+      .video-info small {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container-scroller">
+    <div class="container-fluid page-body-wrapper">
+      {% include 'partials/_navbar.html' %}
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row">
+            <div class="col-md-12 stretch-card">
+              <div class="card-body">
+                <div class="video-container">
+                  {% if video.video %}
+                  <video id="mainVideo" controls poster="{{ video.tumbnail.url }}">
+                    <source src="{{ video.video.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                  {% endif %}
+
+                
+                <a href="{% url 'profile' video.user.username %}" style="text-decoration: none; color: inherit;">
+                  <div class="video-details">
+                    <img src="{{ video.user.profile.photo.url }}" alt="User">
+                  </a>
+                    <div class="video-info">
+                      <span style="font-weight: 500;">{{ video.title }}</span><br>
+                      <small style="color: gray;">{{ video.user.username }} • {{ video.time_since_uploaded }} • {{ video.views }} views</small>
+                    </div>
+                  </div>
+<form action="{% url 'video_like' video.id %}" method="post" style="display:inline;">
+  {% csrf_token %}
+  <button type="submit"
+          class="btn btn-sm {% if user_action == 'like' %}mdi mdi-thumb-up{% else %}mdi mdi-thumb-up-outline{% endif %}">
+          {{ like }}
+   
+  </button>
+</form>
+
+<!-- Dislike Button -->
+<form action="{% url 'video_dislike' video.id %}" method="post" style="display:inline;">
+  {% csrf_token %}
+  <button type="submit"
+          class="btn btn-sm {% if user_action == 'dislike' %}mdi mdi-thumb-down{% else %}mdi mdi-thumb-down-outline{% endif %}">
+          {{ dislike }}
+  </button>
+</form>
+
+                <i class="btn btn-danger mdi mdi-comment mt-2" onclick="toggleComments()"><p>{{ video.comments.count }} </p></i>
+
+                <div id="comment-section" class="comments-box mt-3">
+                  <form method="post" action="{% url 'video_detail' video.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                      <textarea name="text" class="form-control" rows="2" placeholder="Write a comment..." required></textarea>
+                    </div>
+                    <button type="submit" name="comment_submit" class="btn btn-primary btn-sm">Post</button>
+                  </form>
+
+                  <div class="custom-scrollbar mt-4">
+                    {% for comment in video.comments.all %}
+                      <div style="margin-bottom: 10px;">
+                        <a href="{% url 'profile' comment.user.username %}" style="text-decoration: none; color: inherit;">
+                          <img src="{{ comment.user.profile.photo.url }}" style="border-radius: 50%; height: 30px; width: 30px;" alt="user">
+                          <small style="margin-left: 10px;">{{ comment.user.username }}</small>
+                        </a>
+                        <small style="color: #aaa;"> • {{ comment.created_at|timesince }} ago</small> {% if request.user == comment.user and request.user.is_superuser %}
+      <form action="{% url 'delete_comment' comment.id %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-danger mdi mdi-delete-circle-outline"></button>
+      </form>
+    {% endif %}
+                        <p style="margin-left: 40px;">{{ comment.text }}</p>
+                      </div>
+                      
+                    {% empty %}
+                      <p style="color: #ccc;">No comments yet.</p>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- main panel -->
+    </div> <!-- page-body-wrapper -->
+  </div> <!-- container-scroller -->
+
+  
+
+  
+  <!-- JS scripts -->
+  <script>
+    const video = document.getElementById('mainVideo');
+    const progressBar = document.getElementById('progressBar');
+    const volumeControl = document.getElementById('volumeControl');
+    const speedControl = document.getElementById('speedControl');
+    const thumbnailPreview = document.getElementById('thumbnailPreview');
+    const progressContainer = document.getElementById('progressContainer');
+
+    video.addEventListener('timeupdate', () => {
+      progressBar.value = video.currentTime;
+    });
+
+    progressBar.addEventListener('input', () => {
+      video.currentTime = progressBar.value;
+    });
+
+    video.addEventListener('loadedmetadata', () => {
+      progressBar.max = video.duration;
+    });
+
+    volumeControl.addEventListener('input', () => {
+      video.volume = volumeControl.value;
+    });
+
+    speedControl.addEventListener('change', () => {
+      video.playbackRate = speedControl.value;
+    });
+
+    function seek(seconds) {
+      video.currentTime += seconds;
+    }
+
+    function toggleFullscreen() {
+      if (video.requestFullscreen) video.requestFullscreen();
+    }
+
+    function togglePiP() {
+      if (document.pictureInPictureElement) {
+        document.exitPictureInPicture();
+      } else if (video.requestPictureInPicture) {
+        video.requestPictureInPicture();
+      }
+    }
+
+    progressBar.addEventListener('mousemove', (e) => {
+      const rect = progressBar.getBoundingClientRect();
+      const percent = (e.clientX - rect.left) / rect.width;
+      const time = percent * video.duration;
+      const thumbnailIndex = Math.floor(time / 10);
+      const x = (thumbnailIndex % 10) * 160;
+      const y = Math.floor(thumbnailIndex / 10) * 90;
+      thumbnailPreview.style.backgroundPosition = `-${x}px -${y}px`;
+      thumbnailPreview.style.left = `${e.clientX - rect.left}px`;
+      thumbnailPreview.style.display = 'block';
+    });
+
+    progressBar.addEventListener('mouseleave', () => {
+      thumbnailPreview.style.display = 'none';
+    });
+
+    function toggleComments() {
+      document.getElementById('comment-section').classList.toggle('show');
+    }
+  </script>
+
+  <!-- Optional UI Scripts -->
+  <script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
+  <script src="{% static 'assets/js/off-canvas.js' %}"></script>
+  <script src="{% static 'assets/js/hoverable-collapse.js' %}"></script>
+  <script src="{% static 'assets/js/misc.js' %}"></script>
+  <script src="{% static 'assets/js/settings.js' %}"></script>
+  <script src="{% static 'assets/js/todolist.js' %}"></script>
+</body>
+</html>

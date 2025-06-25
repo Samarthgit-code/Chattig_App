@@ -1,0 +1,251 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Video Shorts</title>
+
+  <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/vendors/select2/select2.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+  <link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}">
+
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    textarea {
+      color: #fff;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 Aspect Ratio */
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .video-wrapper video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .video-title-overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      z-index: 2;
+    }
+
+    .custom-play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      font-size: 40px;
+      color: white;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 12px 18px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+    }
+
+    .video-wrapper:hover .custom-play-button {
+      display: block;
+    }
+
+    .video-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .video-meta img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .video-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-body {
+      background-color: #000000;
+      border-radius: 10px;
+      padding: 16px;
+      height: 100%;
+    }
+
+    @media (max-width: 768px) {
+      .video-meta img {
+        width: 35px;
+        height: 35px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container-scroller">
+  <div class="container-fluid page-body-wrapper">
+    {% include "partials/_navbar.html" %}
+    
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="row">
+        {% for i in videos %}
+      <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-4">
+        <a href="{% url 'video_detail' i.id %}" style="text-decoration: none;">
+          <div class="card-body">
+
+            {% if i.tumbnail %}
+            <div class="video-wrapper position-relative">
+              <div class="video-title-overlay video-duration">--:--</div>
+
+              <!-- Unique video ID using forloop.counter -->
+              <video id="video{{ forloop.counter }}" class="custom-video" poster="{{ i.tumbnail.url }}" preload="metadata">
+                <source src="{{ i.video.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+
+              <!-- Play button overlay -->
+              <div class="custom-play-button" onclick="togglePlay('video{{ forloop.counter }}', this)">▶</div>
+            </div>
+            {% else %}
+              <p>No thumbnail available</p>
+            {% endif %}
+
+            <!-- Video meta section -->
+            <div class="video-meta mt-2 d-flex align-items-center">
+              <a href="{% url 'profile' i.user.username %}" class="mr-2">
+                <img src="{{ i.user.profile.photo.url }}" alt="Profile"
+                     style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #666;">
+              </a>
+              <div class="video-info">
+                <div class="font-weight-bold" >{{ i.title }}</div>
+                <div style="font-size: 13px; color: gray;">
+                  {{ i.user.username }} • <span class="view-count">{{ i.views }}</span> views • {{ i.time_since_uploaded }}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </a>
+      </div>
+    {% empty %}
+      <p>No videos available.</p>
+    {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.custom-video').forEach(video => {
+  const container = video.parentElement;
+  const durationElem = container.querySelector('.video-duration');
+
+  video.addEventListener('loadedmetadata', () => {
+    durationElem.textContent = formatDuration(video.duration);
+  });
+});
+
+function formatDuration(seconds) {
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+  if (hrs > 0) {
+    return `${hrs}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  } else {
+    return `${mins}:${String(secs).padStart(2, '0')}`;
+  }
+}
+
+</script>
+
+
+
+
+<script>
+  function togglePlay(videoId, button) {
+    const video = document.getElementById(videoId);
+    if (video.paused) {
+      video.play();
+      button.style.display = 'none';
+    } else {
+      video.pause();
+      button.style.display = 'block';
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("video").forEach((video, index) => {
+      const playBtn = video.parentElement.querySelector(".custom-play-button");
+      video.addEventListener("click", () => togglePlay(video.id, playBtn));
+      video.addEventListener("pause", () => playBtn.style.display = 'block');
+      video.addEventListener("play", () => playBtn.style.display = 'none');
+    });
+  });
+</script>
+
+
+<script>
+  function formatViews(num) {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    }
+    if (num >= 1000) {
+      return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    }
+    return num.toString();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.view-count').forEach(el => {
+      const raw = parseInt(el.textContent, 10);
+      if (!isNaN(raw)) {
+        el.textContent = formatViews(raw);
+      }
+    });
+  });
+</script>
+
+<!-- JS -->
+<script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
+<script src="{% static 'assets/vendors/select2/select2.min.js' %}"></script>
+<script src="{% static 'assets/vendors/typeahead.js/typeahead.bundle.min.js' %}"></script>
+<script src="{% static 'assets/js/off-canvas.js' %}"></script>
+<script src="{% static 'assets/js/hoverable-collapse.js' %}"></script>
+<script src="{% static 'assets/js/misc.js' %}"></script>
+<script src="{% static 'assets/js/settings.js' %}"></script>
+<script src="{% static 'assets/js/todolist.js' %}"></script>
+<script src="{% static 'assets/js/file-upload.js' %}"></script>
+<script src="{% static 'assets/js/typeahead.js' %}"></script>
+<script src="{% static 'assets/js/select2.js' %}"></script>
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+{% load static %}
+
+<style>
+  nav, div {
+    background-color: rgb(8, 0, 0) !important;
+    color: white;
+  }
+
+  nav a {
+    color: white;
+    text-decoration: none;
+  }
+
+  .navbar {
+    height: 60px;
+    border-top: 1px solid white;
+  }
+
+  .menu-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+  }
+
+  .navbar-nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    align-items: center;
+    margin-bottom: 0;
+  }
+
+  .nav-item {
+    list-style: none;
+  }
+
+  .navbar-menu-wrapper {
+    width: 100%;
+  }
+
+  .position-absolute {
+    font-size: 12px;
+  }
+
+    .nav-item.active .nav-link {
+    background-color: #1f1f1f;
+    border-radius: 8px;
+  }
+
+  .nav-item.active .menu-icon i {
+    color: #2196f3 !important; /* YouTube-like blue */
+  }
+  
+
+
+  .nav-item.active .nav-link {
+    background-color: #1f1f1f;
+    border-radius: 8px;
+  }
+  .nav-item .menu-title {
+    color: #aaa;
+  }
+  .nav-item.active .menu-title,
+  .nav-item.active i {
+    color: #2196f3 !important; /* YouTube-like active color */
+  }
+
+
+</style>
+
+<nav class="navbar p-0 fixed-bottom d-flex flex-row">
+  <div class="navbar-menu-wrapper flex-grow d-flex align-items-center justify-content-center">
+    <ul class="navbar-nav w-100">
+    <!-- Home -->
+<li class="nav-item menu-items text-center {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+  <a class="nav-link d-flex flex-column align-items-center" href="{% url 'home' %}">
+    <i class="mdi mdi-home-variant {% if request.resolver_match.url_name == 'home' %}text-primary{% endif %}" style="font-size: 24px;"></i>
+    <span class="menu-title " style="font-size: 12px;">Home</span>
+  </a>
+</li>
+
+<!-- Following -->
+<li class="nav-item menu-items text-center {% if request.resolver_match.url_name == 'following' %}active{% endif %}">
+  <a class="nav-link d-flex flex-column align-items-center" href="{% url 'following' request.user.username %}">
+    <i class="mdi mdi-table-large {% if request.resolver_match.url_name == 'following' %}text-primary{% endif %}" style="font-size: 24px;"></i>
+    <span class="menu-title" style="font-size: 12px;">Following</span>
+  </a>
+</li>
+
+<li class="nav-item menu-items text-center {% if request.resolver_match.url_name == 'create' %}active{% endif %}">
+  <a class="nav-link d-flex flex-column align-items-center" href="{% url 'create' %}">
+    <i class="mdi mdi-plus {% if request.resolver_match.url_name == 'create' %}text-primary{% endif %}" style="font-size: 24px;"></i>
+    <span class="menu-title" style="font-size: 12px;">Create</span>
+  </a>
+</li>
+
+
+<!-- Notifications -->
+<li class="nav-item menu-items text-center {% if request.resolver_match.url_name == 'notifications' %}active{% endif %}">
+  <a class="nav-link d-flex flex-column align-items-center position-relative" href="{% url 'notifications' %}">
+    <i class="mdi {% if request.resolver_match.url_name == 'notifications' %}mdi-bell text-primary{% else %}mdi-bell-outline{% endif %}" style="font-size: 24px;"></i>
+    {% if unread_notifications > 0 %}
+      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        {{ unread_notifications }}
+      </span>
+    {% endif %}
+    <span class="menu-title" style="font-size: 12px;">Notifications</span>
+  </a>
+</li>
+
+
+      <li class="nav-item menu-items {% if request.resolver_match.url_name == 'watch_history' %}active{% endif %}">
+  <a class="nav-link" href="{% url 'watch_history' %}">
+    <span class="menu-icon">
+      <i class="mdi mdi-history {% if request.resolver_match.url_name == 'watch_history' %}mdi mdi-history text-primary{% endif %}"></i>
+    </span>
+    <span class="menu-title" style="font-size: 12px;">History</span>
+  </a>
+</li>
+
+<li class="nav-item menu-items text-center {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+  <a class="nav-link d-flex flex-column align-items-center" href="{% url 'profile' request.user.username %}">
+    {% if request.user.profile.photo %}
+      <img src={% url 'media-proxy' request.user.profile.photo.name %}
+           alt="Profile"
+           style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 2px solid #666;">
+    {% else %}
+      <img src="{% static 'images/default-profile.png' %}"
+           alt="Profile"
+           style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 2px solid #666;">
+    {% endif %}
+    <span class="menu-title" style="font-size: 12px;">You</span>
+  </a>
+</li>
+
+
+
+
+    </ul>
+  </div>
+</nav>

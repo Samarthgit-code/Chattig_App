@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ video.title }} - Comments</title>
+  <style>
+    body {
+      background: #121212;
+      font-family: Arial, sans-serif;
+      color: #fff;
+      padding: 20px;
+    }
+    .comments-container {
+      max-width: 600px;
+      margin: auto;
+    }
+    .comments-box {
+      max-height: 300px;
+      overflow-y: auto;
+      background: rgb(15, 15, 15);
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .comment {
+      margin-bottom: 10px;
+      color: #ddd;
+    }
+    .comment strong {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="comments-container">
+    <h2>{{ video.title }}</h2>
+    <video width="100%" controls poster="{{ video.tumbnail.url }}">
+      <source src="{{ video.video.url }}">
+    </video>
+
+    <div class="comments" style="margin-top: 20px;">
+      <h5 style="color: #fff;">Comments:</h5>
+      <div class="comments-box">
+        {% for comment in comments %}
+          <div class="comment">
+            <strong>{{ comment.user.username }}</strong>: {{ comment.text }}
+          </div>
+        {% empty %}
+          <p style="color: #aaa;">No comments yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</body>
+</html>

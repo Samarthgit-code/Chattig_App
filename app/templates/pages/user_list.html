@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select User</title>
+    <style>
+        :root {
+            --bg-light: #ffffff;
+            --bg-dark: #1e1e1e;
+            --text-light: #000000;
+            --text-dark: #ffffff;
+            --primary: #25D366;
+            --link-light: #333;
+            --link-dark: #ddd;
+        }
+
+        [data-theme="dark"] {
+            --bg: var(--bg-dark);
+            --text: var(--text-dark);
+            --link: var(--link-dark);
+        }
+
+        [data-theme="light"] {
+            --bg: var(--bg-light);
+            --text: var(--text-light);
+            --link: var(--link-light);
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: var(--primary);
+            padding: 1rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .container {
+            flex: 1;
+            padding: 1rem;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--link);
+            background: rgba(0, 0, 0, 0.05);
+            padding: 0.6rem 1rem;
+            display: block;
+            border-radius: 6px;
+        }
+
+        a:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-theme {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 600px) {
+            a {
+                font-size: 14px;
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2 style="margin: 0;">Chats</h2>
+        <button class="toggle-theme" onclick="toggleTheme()">🌓</button>
+    </div>
+
+    <div class="container">
+        <h2>Select a user to chat:</h2>
+        <ul>
+            {% for user in users %}
+                <li><a href="{% url 'chat' user.username %}">{{ user.username }}</a></li>
+            {% empty %}
+                <li>No users found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute("data-theme");
+            document.documentElement.setAttribute("data-theme", current === "light" ? "dark" : "light");
+        }
+    </script>
+
+</body>
+</html>

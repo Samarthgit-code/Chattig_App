@@ -1,0 +1,175 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notifications</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/vendors/css/vendor.bundle.base.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+  <link rel="shortcut icon" href="{% static 'assets/images/favicon.png' %}">
+
+  <style>
+    .notification-card {
+      background: #000000;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .notification-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 1rem 0;
+      border-bottom: 1px solid #eee;
+      flex-wrap: wrap;
+    }
+
+    .notification-item img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .notification-text {
+      margin-left: 1rem;
+      flex: 1;
+    }
+
+    .notification-time {
+      text-align: right;
+      min-width: 100px;
+    }
+
+    @media (max-width: 576px) {
+      .notification-item {
+        flex-direction: column;
+        align-items: flex-start !important;
+      }
+
+      .notification-time {
+        text-align: left !important;
+        margin-top: 0.5rem;
+      }
+      
+    }
+    .notification-card {
+  background: #000000;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+/* Custom Scrollbar */
+.notification-card::-webkit-scrollbar {
+  width: 8px;
+}
+
+.notification-card::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.notification-card::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.list-group-item {
+  background-color: #121212 !important; /* dark black background */
+  color: #fff !important;               /* white text */
+  border: none;                         /* remove default borders */
+}
+
+.list-group-item:hover {
+  background-color: #1e1e1e !important; /* slightly lighter on hover */
+}
+
+.badge.bg-danger {
+  background-color: #e03e2f !important; /* keep badge visible */
+}
+
+.btn-outline-danger {
+  color: #e03e2f;
+  border-color: #e03e2f;
+}
+
+.btn-outline-danger:hover {
+  background-color: #e03e2f;
+  color: #fff;
+}
+
+
+  </style>
+</head>
+<body>
+    <div class="container-scroller">
+      <!-- partial:partials/_sidebar.html -->
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_navbar.html -->
+        {% include "partials/_navbar.html" %}
+<div class="container mt-5">
+    
+
+
+  <div class="notification-card">
+      <ul class="list-group">
+    {% for notification in notifications %}
+  <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+      <div class="d-flex align-items-center">
+        <!-- User profile image -->
+        <img src="{{ notification.user.profile.photo.url }}" 
+
+         l
+             alt="Profile Picture" 
+             class="rounded-circle me-3" 
+             style="width: 40px; height: 40px; object-fit: cover;">
+
+        <div>
+          <!-- Username and message -->
+          <strong>{{ notification.user.username }}</strong><br>
+          <span>{{ notification.message }}</span>
+        </div>
+      </div>
+
+      <div class="ms-auto text-end d-flex flex-column align-items-end">
+        <!-- Timestamp -->
+        <small class="text-muted">{{ notification.created_at|date:"M d, Y H:i" }}</small>
+
+        <!-- New badge if unread -->
+        {% if not notification.is_read %}
+          <span class="badge bg-danger mb-1">New</span>
+        {% endif %}
+
+        <!-- Delete button -->
+        <form method="post" action="{% url 'delete_notification' notification.id %}" class="mt-1">
+          {% csrf_token %}
+          <button class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Delete this notification?');">
+            <i class="mdi mdi-delete"></i>
+          </button>
+        </form>
+      </div>
+    </li>
+  {% empty %}
+    <li class="list-group-item">No notifications.</li>
+    {% endfor %}
+    </ul>
+    
+  </div>
+</div>
+
+<!-- JS -->
+<script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
+<script src="{% static 'assets/js/off-canvas.js' %}"></script>
+<script src="{% static 'assets/js/misc.js' %}"></script>
+
+</body>
+</html>
