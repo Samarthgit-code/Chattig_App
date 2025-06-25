@@ -90,13 +90,6 @@
   </a>
 </li>
 
-<li class="nav-item menu-items text-center {% if request.resolver_match.url_name == 'create' %}active{% endif %}">
-  <a class="nav-link d-flex flex-column align-items-center" href="{% url 'create' %}">
-    <i class="mdi mdi-plus {% if request.resolver_match.url_name == 'create' %}text-primary{% endif %}" style="font-size: 24px;"></i>
-    <span class="menu-title" style="font-size: 12px;">Create</span>
-  </a>
-</li>
-
 
 <!-- Notifications -->
 <li class="nav-item menu-items text-center {% if request.resolver_match.url_name == 'notifications' %}active{% endif %}">
