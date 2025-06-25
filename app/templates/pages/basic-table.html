@@ -141,7 +141,7 @@
             <!-- Video meta section -->
             <div class="video-meta mt-2 d-flex align-items-center">
               <a href="{% url 'profile' i.user.username %}" class="mr-2">
-                <img src={% url 'media-proxy' i.user.profile.photo.url %} alt="Profile"
+                <img src="{% url 'media-proxy' i.user.profile.photo.url %}" alt="Profile"
                      style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #666;">
               </a>
               <div class="video-info">
