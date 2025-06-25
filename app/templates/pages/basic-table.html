@@ -126,8 +126,8 @@
               <div class="video-title-overlay video-duration">--:--</div>
 
               <!-- Unique video ID using forloop.counter -->
-              <video id="video{{ forloop.counter }}" class="custom-video" poster="{{ i.tumbnail.url }}" preload="metadata">
-                <source src="{{ i.video.url }}" type="video/mp4">
+              <video id="video{{ forloop.counter }}" class="custom-video" poster="{% url 'media-proxy' i.tumbnail.url %}" preload="metadata">
+                <source src="{% url 'media-proxy' i.video.url %}" type="video/mp4">
                 Your browser does not support the video tag.
               </video>
 
