@@ -62,6 +62,7 @@ def view_profile(request, username):
     return render(request, 'pages/basic_elements.html', {
         'user_profile': user_profile,
         'is_subscribed': is_subscribed,
+        
     })
 
 
@@ -84,14 +85,14 @@ def upload_profile(request):
 @login_required(login_url='login')
 def view_data(request):
     video=Videos.objects.all()
-    return render(request,"view.html",{'videos':video})
+    return render(request,"view.html",{'videos':video,'nextcloud_base': settings.NEXTCLOUD_PUBLIC_BASE,})
 
 
 
 @login_required(login_url='login')
 def index(request):
     videos = Videos.objects.all().prefetch_related('comments', 'user__profile')
-    return render(request, "pages/basic_elements.html", {'videos': videos,})
+    return render(request, "pages/basic_elements.html", {'videos': videos,'nextcloud_base': settings.NEXTCLOUD_PUBLIC_BASE})
     
 
 from django.db.models import Count, Q
