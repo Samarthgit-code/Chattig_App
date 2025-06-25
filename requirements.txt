@@ -4,3 +4,4 @@ gunicorn
 django
 Pillow
 whitenoise
+dj_database_url
