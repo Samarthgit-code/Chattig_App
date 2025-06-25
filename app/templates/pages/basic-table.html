@@ -126,8 +126,8 @@
               <div class="video-title-overlay video-duration">--:--</div>
 
               <!-- Unique video ID using forloop.counter -->
-              <video id="video{{ forloop.counter }}" class="custom-video" poster="{% url 'media-proxy' i.video.name %}" preload="metadata">
-                <source src="{% url 'media-proxy' i.video.url %}" type="video/mp4">
+              <video id="video{{ forloop.counter }}" class="custom-video" poster={% url 'media-proxy' i.video.name %}" preload="metadata>
+                <source src={% url 'media-proxy' i.video.url %} type="video/mp4">
                 Your browser does not support the video tag.
               </video>
 
@@ -140,8 +140,8 @@
 
             <!-- Video meta section -->
             <div class="video-meta mt-2 d-flex align-items-center">
-              <a href="{% url 'profile' i.user.username %}" class="mr-2">
-                <img src="{{ i.user.profile.photo.url }}" alt="Profile"
+              <a href="{% url 'profile' i.user.username %}" class="mr-2">         
+                <img src={% url 'media-proxy'  i.user.profile.photo.url %} alt="Profile"
                      style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #666;">
               </a>
               <div class="video-info">
