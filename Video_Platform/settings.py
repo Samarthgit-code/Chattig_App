@@ -11,7 +11,7 @@ SECRET_KEY = 'django-insecure-wp_v(2z00ec3zhng&t5gs6@*y6-x7&(b=)n9%8ir^(9v5mxb2&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['chattig-app.onrender.com','*']
+ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = ['https://chattig-app.onrender.com']
 
 # Application definition
@@ -22,7 +22,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app'
+    'app',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -95,9 +97,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-
 # ========================
 # ✅ Media (only if needed)
 # ========================
@@ -106,6 +105,8 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 NEXTCLOUD_BASE_URL = 'https://tio.lv.tab.digital/remote.php/dav/files/samarth172024%40gmail.com/django_media/'
 NEXTCLOUD_USERNAME = 'samarth172024@gmail.com'
 NEXTCLOUD_PASSWORD = 'samarth172024@gmail.com'  
+
+NEXTCLOUD_PUBLIC_BASE = 'https://tio.lv.tab.digital/s/yGRxgDZM8iNa6qc/download?path=/'
 
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
